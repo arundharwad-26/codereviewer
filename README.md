@@ -1,101 +1,176 @@
 # 🚀 CodeReviewer AI
 
-### AI-Powered Code Review & Pull Request Analysis Platform
+<div align="center">
 
-CodeReviewer AI is a full-stack application that automatically analyzes GitHub repositories and pull requests using AI-driven review agents. It helps developers identify bugs, code smells, security concerns, and maintainability issues before merging code.
+### Intelligent Pull Request Analysis & AI-Powered Code Review Platform
 
----
+Analyze repositories, review pull requests, detect code quality issues, and generate actionable feedback using AI-driven review agents.
 
-## ✨ Key Features
+**FastAPI • React • ChromaDB • Celery • Docker • GitHub Actions**
 
-🔍 Automated Pull Request Analysis
-
-🤖 AI-Powered Code Review Suggestions
-
-📊 Repository Health & Review Dashboard
-
-🔐 Secure Authentication System
-
-⚡ FastAPI REST APIs
-
-🧠 Multi-Agent Review Architecture
-
-🔄 GitHub Webhook Integration
-
-📈 Review Tracking & Management
+</div>
 
 ---
 
-## 🏗️ Architecture
+## 🌟 Overview
 
-```text id="xaqh4h"
-GitHub Repository
-        │
-        ▼
- GitHub Webhook
-        │
-        ▼
- FastAPI Backend
-        │
- ┌──────┼──────┐
- ▼      ▼      ▼
-AI Agent Security Agent Quality Agent
-        │
-        ▼
- Review Engine
-        │
-        ▼
- React Dashboard
+CodeReviewer AI is a modern full-stack platform designed to automate code review workflows. The system integrates with GitHub repositories, analyzes pull requests, evaluates code quality, and generates intelligent review suggestions to help development teams improve software quality and reduce manual review effort.
+
+### Why This Project?
+
+Traditional code reviews are time-consuming and inconsistent. CodeReviewer AI introduces an automated review pipeline that assists developers by identifying:
+
+* 🔍 Code Quality Issues
+* 🛡️ Security Concerns
+* ⚠️ Potential Bugs
+* 📈 Maintainability Problems
+* 💡 Improvement Suggestions
+
+---
+
+## ✨ Core Features
+
+### 🤖 AI Review Engine
+
+* Automated code analysis
+* Intelligent review generation
+* Multi-agent architecture
+
+### 🔗 GitHub Integration
+
+* Repository management
+* Pull request tracking
+* Webhook support
+
+### 📊 Review Dashboard
+
+* Review history
+* Repository insights
+* Status monitoring
+
+### ⚡ Scalable Backend
+
+* FastAPI REST APIs
+* Async task processing with Celery
+* Database migration support using Alembic
+
+### 🎨 Modern Frontend
+
+* React + Vite
+* Responsive UI
+* Interactive review experience
+
+---
+
+## 🏗️ System Architecture
+
+```text
+Developer Pushes Code
+          │
+          ▼
+     GitHub Repo
+          │
+          ▼
+    GitHub Webhook
+          │
+          ▼
+     FastAPI Server
+          │
+ ┌────────┼────────┐
+ │        │        │
+ ▼        ▼        ▼
+Code   Security  Quality
+Agent   Agent     Agent
+ │        │        │
+ └────────┴────────┘
+          │
+          ▼
+   Review Orchestrator
+          │
+          ▼
+    Review Database
+          │
+          ▼
+    React Dashboard
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-| Category    | Technologies            |
-| ----------- | ----------------------- |
-| Frontend    | React, Vite, JavaScript |
-| Backend     | FastAPI, Python         |
-| Database    | SQLAlchemy, Alembic     |
-| AI Layer    | AI Review Agents        |
-| Memory      | ChromaDB                |
-| Async Tasks | Celery                  |
-| DevOps      | Docker, GitHub Actions  |
+### Backend
+
+* Python
+* FastAPI
+* SQLAlchemy
+* Alembic
+* Celery
+* ChromaDB
+
+### Frontend
+
+* React
+* Vite
+* JavaScript
+* CSS
+
+### DevOps
+
+* Docker
+* GitHub Actions
+* CI/CD Pipelines
+
+### Database & Storage
+
+* SQL Database
+* ChromaDB Vector Storage
 
 ---
 
 ## 📂 Project Structure
 
-```text id="h8h8o6"
-codereviewer
-├── backend
-├── frontend
-├── migrations
-└── .github/workflows
+```text
+codereviewer/
+│
+├── backend/
+│   ├── app/
+│   ├── migrations/
+│   ├── tests/
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── .github/
+│   └── workflows/
+│
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Installation
 
 ### Clone Repository
 
-```bash id="zh9t7m"
+```bash
 git clone https://github.com/arundharwad-26/codereviewer.git
 cd codereviewer
 ```
 
-### Backend
+### Backend Setup
 
-```bash id="wz0e4g"
+```bash
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Frontend
+### Frontend Setup
 
-```bash id="yfy4h7"
+```bash
 cd frontend
 npm install
 npm run dev
@@ -106,15 +181,23 @@ npm run dev
 ## 🎯 Future Enhancements
 
 * AI Severity Scoring
-* Code Quality Metrics
-* Team Collaboration
+* Advanced Security Review Agent
+* Team Collaboration Features
 * Cloud Deployment
-* Advanced Security Analysis
+* Real-Time Notifications
+* Repository Analytics Dashboard
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Developer
 
-**Arun B Dharwad**
+### Arun B Dharwad
 
-GitHub: https://github.com/arundharwad-26
+MCA Student | Python Developer | Data Science Enthusiast
+
+* GitHub: https://github.com/arundharwad-26
+* Interests: Python Development, AI, Machine Learning, Data Science
+
+---
+
+⭐ If you found this project useful, consider giving it a star.
