@@ -1,0 +1,172 @@
+import httpx
+from loguru import logger
+from app.config import settings
+from app.exceptions import GitHubAPIError
+
+
+# Base GitHub API URL
+GITHUB_API_BASE = "https://api.github.com"
+
+# Auth headers used in every request
+def get_headers() -> dict:
+    return {
+        "Authorization": f"Bearer {settings.GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+
+async def get_pr_diff(repo_full_name: str, pr_number: int) -> str:
+    """
+    Fetch the raw diff of a pull request.
+    Returns the diff as a plain string.
+    """
+    url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/pulls/{pr_number}"
+
+    headers = get_headers()
+    headers["Accept"] = "application/vnd.github.v3.diff"
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, headers=headers, timeout=30.0)
+
+            if response.status_code != 200:
+                raise GitHubAPIError(
+                    f"Failed to fetch PR diff: {response.text}",
+                    status_code=response.status_code
+                )
+
+            logger.info(f"Fetched diff for PR #{pr_number} in {repo_full_name}")
+            return response.text
+
+        except httpx.TimeoutException:
+            raise GitHubAPIError(
+                f"Timeout while fetching diff for PR #{pr_number}"
+            )
+        except httpx.RequestError as e:
+            raise GitHubAPIError(
+                f"Network error while fetching diff: {str(e)}"
+            )
+
+
+async def get_pr_files(repo_full_name: str, pr_number: int) -> list[dict]:
+    """
+    Fetch the list of files changed in a pull request.
+    Returns a list of dicts with filename, status, additions, deletions, patch.
+    """
+    url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/pulls/{pr_number}/files"
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(
+                url,
+                headers=get_headers(),
+                timeout=30.0
+            )
+
+            if response.status_code != 200:
+                raise GitHubAPIError(
+                    f"Failed to fetch PR files: {response.text}",
+                    status_code=response.status_code
+                )
+
+            files = response.json()
+            logger.info(
+                f"Fetched {len(files)} files for PR #{pr_number} in {repo_full_name}"
+            )
+            return files
+
+        except httpx.TimeoutException:
+            raise GitHubAPIError(
+                f"Timeout while fetching files for PR #{pr_number}"
+            )
+        except httpx.RequestError as e:
+            raise GitHubAPIError(
+                f"Network error while fetching files: {str(e)}"
+            )
+
+
+async def post_review_comment(
+    repo_full_name: str,
+    pr_number: int,
+    body: str
+) -> None:
+    """
+    Post a comment on a pull request issue thread.
+    Returns nothing. Raises GitHubAPIError on failure.
+    """
+    url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/issues/{pr_number}/comments"
+
+    payload = {"body": body}
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                url,
+                headers=get_headers(),
+                json=payload,
+                timeout=30.0
+            )
+
+            if response.status_code != 201:
+                raise GitHubAPIError(
+                    f"Failed to post comment: {response.text}",
+                    status_code=response.status_code
+                )
+
+            logger.info(f"Posted comment on PR #{pr_number} in {repo_full_name}")
+
+        except httpx.TimeoutException:
+            raise GitHubAPIError(
+                f"Timeout while posting comment on PR #{pr_number}"
+            )
+        except httpx.RequestError as e:
+            raise GitHubAPIError(
+                f"Network error while posting comment: {str(e)}"
+            )
+
+
+async def create_review_summary(
+    repo_full_name: str,
+    pr_number: int,
+    report: dict
+) -> None:
+    """
+    Build a formatted markdown summary from the merged report
+    and post it as a comment on the PR.
+    """
+    overall_score = report.get("overall_score", 0)
+    total_issues = report.get("total_issues", 0)
+    highest_severity = report.get("highest_severity", "low")
+
+    code_review = report.get("code_review", {})
+    security = report.get("security", {})
+
+    # Build markdown summary
+    body = f"""## 🤖 AI Code Review Summary
+
+### Overall Score: {overall_score}/100
+
+| Metric | Value |
+|--------|-------|
+| Total Issues | {total_issues} |
+| Highest Severity | {highest_severity.upper()} |
+| Code Quality Score | {overall_score}/100 |
+
+---
+
+### 📋 Code Review
+{code_review.get("summary", "No summary available")}
+
+---
+
+### 🔒 Security Analysis
+{security.get("summary", "No security issues found")}
+
+---
+
+*Review generated by CodeReviewer AI — powered by Claude*
+"""
+
+    await post_review_comment(repo_full_name, pr_number, body)
+    logger.info(f"Posted review summary on PR #{pr_number} in {repo_full_name}")
