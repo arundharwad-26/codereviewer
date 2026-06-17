@@ -103,23 +103,6 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots here:
-
-* Login Page
-* Dashboard
-* Repository Analysis
-* Review Details
-
-Example:
-
-```markdown
-![Dashboard](screenshots/dashboard.png)
-```
-
----
-
 ## 🎯 Future Enhancements
 
 * AI Severity Scoring
